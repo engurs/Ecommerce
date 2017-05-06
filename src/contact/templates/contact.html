@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Contact</h1>
+
+<form method ="POST" action=""> {% csrf_token %} <!--csrf django dan,formu daha secure yapıyor, as_p, p pragraf   -->
+{{ form.as_p }}
+<input type="submit" value="submit form" class="btn btn-default"  />
+</form>
+{% endblock  %}
