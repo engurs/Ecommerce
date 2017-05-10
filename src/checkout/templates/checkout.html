@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block script %}
+<script type="text/javascript"> 
+	Stripe.setPublishableKey('{{ publishKey }}'); 
+  function stripeResponseHandler(status, response) {
+
+  // Grab the form:
+  var $form = $('#payment-form');
+
+  if (response.error) { // Problem!
+
+    // Show the errors on the form
+    $form.find('.payment-errors').text(response.error.message);
+    $form.find('button').prop('disabled', false); // Re-enable submission
+
+  } else { // Token was created!
+
+    // Get the token ID:
+    var token = response.id;
+
+    // Insert the token into the form so it gets submitted to the server:
+    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+
+    // Submit the form:
+    $form.get(0).submit();
+
+  }
+}
+</script>
+{% endblock %}
+
+{% block jquery %}
+Stripe.card.createToken({
+  number: $('.card-number').val(),
+  cvc: $('.card-cvc').val(),
+  exp_month: $('.card-expiry-month').val(),
+  exp_year: $('.card-expiry-year').val()
+}, stripeResponseHandler);
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-sm-6 col-sm-offset-3">
+
+
+<form class="form" action="" method="POST"> {% csrf_token %}
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="pk_test_OgKfZLjz3sCkUiyPifnoiq5A"
+    data-amount="999"
+    data-name="Demo Site"
+    data-description="Widget"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto">
+  </script>
+</form>
+</div>
+</div>
+
+{% endblock  %}
